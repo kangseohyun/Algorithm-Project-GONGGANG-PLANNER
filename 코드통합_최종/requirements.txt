@@ -1,0 +1,6 @@
+# Python 3.10 이상 권장
+# CLI 통합 실행(main.py) + Streamlit UI(streamlit_app.py)
+folium==0.20.0
+pandas==2.3.3
+pillow>=7.1.0,<11
+streamlit==1.32.0

@@ -1,0 +1,1260 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_2bb00b5f880508036eef2bd506d78728 {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+
+            <style>html, body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            </style>
+
+            <style>#map {
+                position:absolute;
+                top:0;
+                bottom:0;
+                right:0;
+                left:0;
+                }
+            </style>
+
+            <script>
+                L_NO_TOUCH = false;
+                L_DISABLE_3D = false;
+            </script>
+
+        
+</head>
+<body>
+    
+    
+    <div style="
+        position:fixed;bottom:30px;left:20px;z-index:1000;
+        background:white;border:1px solid #ddd;border-radius:12px;
+        padding:14px 18px;font-family:sans-serif;
+        box-shadow:0 4px 16px rgba(0,0,0,0.15);
+        max-width:320px;
+    ">
+        <div style="font-weight:700;font-size:14px;color:#2C2C2A;margin-bottom:8px">
+            🗺 가천대 캠퍼스 최단경로
+        </div>
+        <div style="display:flex;flex-direction:column;gap:5px;font-size:12px">
+            <div><span style="background:#534AB7;color:white;border-radius:4px;padding:2px 8px">출발</span>
+                &nbsp;가천관</div>
+            <div><span style="background:#993C1D;color:white;border-radius:4px;padding:2px 8px">도착</span>
+                &nbsp;글로벌센터</div>
+            <div><span style="background:#0F6E56;color:white;border-radius:4px;padding:2px 8px">경유</span>
+                &nbsp;후보 장소</div>
+        </div>
+        <hr style="margin:8px 0;border:none;border-top:1px solid #eee">
+        <div style="font-size:12px;color:#5F5E5A">
+            <span style="display:inline-block;width:30px;height:4px;
+                background:#534AB7;vertical-align:middle;margin-right:6px;border-radius:2px"></span>
+            가는 길&nbsp;&nbsp;
+            <span style="display:inline-block;width:30px;height:4px;
+                background:#1D9E75;vertical-align:middle;margin-right:6px;border-radius:2px"></span>
+            돌아오는 길
+        </div>
+        
+        <div style="margin-top:8px;font-size:13px;color:#2C2C2A">
+            <b>최적 경유지:</b> <span style="color:#0F6E56">가천관</span><br>
+            <b>경로:</b> 가천관 → 가천관 → 글로벌센터<br>
+            <b>총 이동시간:</b> 4분
+            &nbsp;(가는 길 0분 + 돌아오는 길 4분)
+        </div>
+    </div>
+    
+            <div class="folium-map" id="map_2bb00b5f880508036eef2bd506d78728" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_2bb00b5f880508036eef2bd506d78728 = L.map(
+                "map_2bb00b5f880508036eef2bd506d78728",
+                {
+                    center: [37.4525, 127.13],
+                    crs: L.CRS.EPSG3857,
+                    ...{
+  "zoom": 17,
+  "zoomControl": true,
+  "preferCanvas": false,
+}
+
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_a23c22b1443109958c3b8bfd830f57da = L.tileLayer(
+                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                {
+  "minZoom": 0,
+  "maxZoom": 19,
+  "maxNativeZoom": 19,
+  "noWrap": false,
+  "attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors",
+  "subdomains": "abc",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_a23c22b1443109958c3b8bfd830f57da.addTo(map_2bb00b5f880508036eef2bd506d78728);
+        
+    
+            var poly_line_9b93c2bba5b9e196eaf54883839c2ef7 = L.polyline(
+                [[37.45047, 127.129785], [37.450485, 127.129586], [37.450051, 127.129361], [37.450464, 127.127548], [37.450153, 127.127274], [37.4497184, 127.1272083]],
+                {"bubblingMouseEvents": true, "color": "#B4B2A9", "dashArray": "6 4", "dashOffset": null, "fill": false, "fillColor": "#B4B2A9", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.5, "smoothFactor": 1.0, "stroke": true, "weight": 2}
+            ).addTo(map_2bb00b5f880508036eef2bd506d78728);
+        
+    
+            poly_line_9b93c2bba5b9e196eaf54883839c2ef7.bindTooltip(
+                `<div>
+                     가천관 ↔ 비전타워: 5분
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_10fe6982ebc91ead7446b8f6dfbeda1c = L.polyline(
+                [[37.45047, 127.129785], [37.450485, 127.129586], [37.450941, 127.129769], [37.450805, 127.130241], [37.451175, 127.130826], [37.452291, 127.13148], [37.452679, 127.132682], [37.45247, 127.132837], [37.452401, 127.132947]],
+                {"bubblingMouseEvents": true, "color": "#B4B2A9", "dashArray": "6 4", "dashOffset": null, "fill": false, "fillColor": "#B4B2A9", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.5, "smoothFactor": 1.0, "stroke": true, "weight": 2}
+            ).addTo(map_2bb00b5f880508036eef2bd506d78728);
+        
+    
+            poly_line_10fe6982ebc91ead7446b8f6dfbeda1c.bindTooltip(
+                `<div>
+                     가천관 ↔ 중앙도서관: 7분
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_5dbea58182ee0bbae41ef1a0c8e38730 = L.polyline(
+                [[37.45047, 127.129785], [37.450485, 127.129586], [37.450051, 127.129361], [37.450454, 127.127883], [37.450829, 127.127895]],
+                {"bubblingMouseEvents": true, "color": "#B4B2A9", "dashArray": "6 4", "dashOffset": null, "fill": false, "fillColor": "#B4B2A9", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.5, "smoothFactor": 1.0, "stroke": true, "weight": 2}
+            ).addTo(map_2bb00b5f880508036eef2bd506d78728);
+        
+    
+            poly_line_5dbea58182ee0bbae41ef1a0c8e38730.bindTooltip(
+                `<div>
+                     가천관 ↔ 스타덤광장: 3분
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_b041179924c52507be9562e1462ea472 = L.polyline(
+                [[37.451964, 127.131881], [37.452287, 127.131612], [37.452187, 127.131357], [37.451182, 127.13081], [37.45082, 127.130199], [37.450924, 127.129759], [37.450485, 127.129586], [37.45047, 127.129785]],
+                {"bubblingMouseEvents": true, "color": "#B4B2A9", "dashArray": "6 4", "dashOffset": null, "fill": false, "fillColor": "#B4B2A9", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.5, "smoothFactor": 1.0, "stroke": true, "weight": 2}
+            ).addTo(map_2bb00b5f880508036eef2bd506d78728);
+        
+    
+            poly_line_b041179924c52507be9562e1462ea472.bindTooltip(
+                `<div>
+                     가천관 ↔ 교육대학원: 5분
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_b3483f0dcbfc24dbf6e42b0bf68ac95b = L.polyline(
+                [[37.45047, 127.129785], [37.450485, 127.129586], [37.450834, 127.129716], [37.451398, 127.127517], [37.451743, 127.127431], [37.451817, 127.127242]],
+                {"bubblingMouseEvents": true, "color": "#B4B2A9", "dashArray": "6 4", "dashOffset": null, "fill": false, "fillColor": "#B4B2A9", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.5, "smoothFactor": 1.0, "stroke": true, "weight": 2}
+            ).addTo(map_2bb00b5f880508036eef2bd506d78728);
+        
+    
+            poly_line_b3483f0dcbfc24dbf6e42b0bf68ac95b.bindTooltip(
+                `<div>
+                     가천관 ↔ 글로벌센터: 4분
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_f552713389bb7748c5fc17c94f891be3 = L.polyline(
+                [[37.451583, 127.128075], [37.451282, 127.128119], [37.450834, 127.129716], [37.450485, 127.129586], [37.45047, 127.129785]],
+                {"bubblingMouseEvents": true, "color": "#B4B2A9", "dashArray": "6 4", "dashOffset": null, "fill": false, "fillColor": "#B4B2A9", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.5, "smoothFactor": 1.0, "stroke": true, "weight": 2}
+            ).addTo(map_2bb00b5f880508036eef2bd506d78728);
+        
+    
+            poly_line_f552713389bb7748c5fc17c94f891be3.bindTooltip(
+                `<div>
+                     가천관 ↔ 공과대학1: 3분
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_18ab701c69a03b5e519dcd15a325af5a = L.polyline(
+                [[37.4497184, 127.1272083], [37.450153, 127.127274], [37.450464, 127.127548], [37.450454, 127.127883], [37.450829, 127.127895]],
+                {"bubblingMouseEvents": true, "color": "#B4B2A9", "dashArray": "6 4", "dashOffset": null, "fill": false, "fillColor": "#B4B2A9", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.5, "smoothFactor": 1.0, "stroke": true, "weight": 2}
+            ).addTo(map_2bb00b5f880508036eef2bd506d78728);
+        
+    
+            poly_line_18ab701c69a03b5e519dcd15a325af5a.bindTooltip(
+                `<div>
+                     비전타워 ↔ 스타덤광장: 3분
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_a138306daec29e694e0ce75f74c19ebb = L.polyline(
+                [[37.451964, 127.131881], [37.452287, 127.131612], [37.452187, 127.131357], [37.451182, 127.13081], [37.45082, 127.130199], [37.450924, 127.129759], [37.450026, 127.129346], [37.450452, 127.127498], [37.450464, 127.127548], [37.450153, 127.127274], [37.4497184, 127.1272083]],
+                {"bubblingMouseEvents": true, "color": "#B4B2A9", "dashArray": "6 4", "dashOffset": null, "fill": false, "fillColor": "#B4B2A9", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.5, "smoothFactor": 1.0, "stroke": true, "weight": 2}
+            ).addTo(map_2bb00b5f880508036eef2bd506d78728);
+        
+    
+            poly_line_a138306daec29e694e0ce75f74c19ebb.bindTooltip(
+                `<div>
+                     비전타워 ↔ 교육대학원: 9분
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_1bd3f49062137e9a331bd579d3ec50f0 = L.polyline(
+                [[37.455134, 127.133493], [37.455136, 127.133259], [37.454399, 127.133415], [37.453965, 127.133794], [37.453393, 127.134046], [37.453056, 127.133622], [37.452187, 127.131357], [37.451182, 127.13081], [37.45082, 127.130199], [37.450924, 127.129759], [37.450051, 127.129361], [37.450464, 127.127548], [37.450153, 127.127274], [37.4497184, 127.1272083]],
+                {"bubblingMouseEvents": true, "color": "#B4B2A9", "dashArray": "6 4", "dashOffset": null, "fill": false, "fillColor": "#B4B2A9", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.5, "smoothFactor": 1.0, "stroke": true, "weight": 2}
+            ).addTo(map_2bb00b5f880508036eef2bd506d78728);
+        
+    
+            poly_line_1bd3f49062137e9a331bd579d3ec50f0.bindTooltip(
+                `<div>
+                     비전타워 ↔ AI관: 19분
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_3868e17c452ad83bf34c5c8b00530928 = L.polyline(
+                [[37.452401, 127.132947], [37.452677, 127.132651], [37.452238, 127.131428], [37.451182, 127.130833], [37.450829, 127.130216], [37.450918, 127.12976], [37.450037, 127.129352], [37.450454, 127.127883], [37.450829, 127.127895]],
+                {"bubblingMouseEvents": true, "color": "#B4B2A9", "dashArray": "6 4", "dashOffset": null, "fill": false, "fillColor": "#B4B2A9", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.5, "smoothFactor": 1.0, "stroke": true, "weight": 2}
+            ).addTo(map_2bb00b5f880508036eef2bd506d78728);
+        
+    
+            poly_line_3868e17c452ad83bf34c5c8b00530928.bindTooltip(
+                `<div>
+                     중앙도서관 ↔ 스타덤광장: 9분
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_8abe2c7243fa219847bbce38c21e10f3 = L.polyline(
+                [[37.452401, 127.132947], [37.452677, 127.132651], [37.453056, 127.133622], [37.453393, 127.134046], [37.453965, 127.133794], [37.454399, 127.133415], [37.455136, 127.133259], [37.455134, 127.133493]],
+                {"bubblingMouseEvents": true, "color": "#B4B2A9", "dashArray": "6 4", "dashOffset": null, "fill": false, "fillColor": "#B4B2A9", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.5, "smoothFactor": 1.0, "stroke": true, "weight": 2}
+            ).addTo(map_2bb00b5f880508036eef2bd506d78728);
+        
+    
+            poly_line_8abe2c7243fa219847bbce38c21e10f3.bindTooltip(
+                `<div>
+                     중앙도서관 ↔ AI관: 8분
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_0722145d21b4390c9b1c876ac2ecfcad = L.polyline(
+                [[37.452401, 127.132947], [37.452669, 127.13263], [37.452286, 127.131658], [37.451964, 127.131881]],
+                {"bubblingMouseEvents": true, "color": "#B4B2A9", "dashArray": "6 4", "dashOffset": null, "fill": false, "fillColor": "#B4B2A9", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.5, "smoothFactor": 1.0, "stroke": true, "weight": 2}
+            ).addTo(map_2bb00b5f880508036eef2bd506d78728);
+        
+    
+            poly_line_0722145d21b4390c9b1c876ac2ecfcad.bindTooltip(
+                `<div>
+                     중앙도서관 ↔ 교육대학원: 4분
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_e383560c512a222291dd0f6594a0d236 = L.polyline(
+                [[37.451583, 127.128075], [37.450829, 127.127895]],
+                {"bubblingMouseEvents": true, "color": "#B4B2A9", "dashArray": "6 4", "dashOffset": null, "fill": false, "fillColor": "#B4B2A9", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.5, "smoothFactor": 1.0, "stroke": true, "weight": 2}
+            ).addTo(map_2bb00b5f880508036eef2bd506d78728);
+        
+    
+            poly_line_e383560c512a222291dd0f6594a0d236.bindTooltip(
+                `<div>
+                     스타덤광장 ↔ 공과대학1: 3분
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_84c3f90ac9adf282688b6a2ce880a714 = L.polyline(
+                [[37.451817, 127.127242], [37.451759, 127.127459], [37.45143, 127.127525], [37.451285, 127.128188], [37.450829, 127.127895]],
+                {"bubblingMouseEvents": true, "color": "#B4B2A9", "dashArray": "6 4", "dashOffset": null, "fill": false, "fillColor": "#B4B2A9", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.5, "smoothFactor": 1.0, "stroke": true, "weight": 2}
+            ).addTo(map_2bb00b5f880508036eef2bd506d78728);
+        
+    
+            poly_line_84c3f90ac9adf282688b6a2ce880a714.bindTooltip(
+                `<div>
+                     스타덤광장 ↔ 글로벌센터: 2분
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_ec6e7e5e0aa363b802455cab74b8b8f7 = L.polyline(
+                [[37.449308, 127.128314], [37.449445, 127.128455], [37.449414, 127.12791], [37.450829, 127.127895]],
+                {"bubblingMouseEvents": true, "color": "#B4B2A9", "dashArray": "6 4", "dashOffset": null, "fill": false, "fillColor": "#B4B2A9", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.5, "smoothFactor": 1.0, "stroke": true, "weight": 2}
+            ).addTo(map_2bb00b5f880508036eef2bd506d78728);
+        
+    
+            poly_line_ec6e7e5e0aa363b802455cab74b8b8f7.bindTooltip(
+                `<div>
+                     스타덤광장 ↔ 공과대학2: 5분
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_68d749d3c0ef451b0b66cd3a6d420b49 = L.polyline(
+                [[37.455134, 127.133493], [37.455136, 127.133259], [37.454399, 127.133415], [37.453965, 127.133794], [37.453393, 127.134046], [37.453056, 127.133622], [37.452209, 127.131396], [37.451188, 127.130822], [37.450829, 127.130238], [37.450932, 127.129745], [37.449447, 127.129016], [37.449441, 127.128383], [37.449308, 127.128314]],
+                {"bubblingMouseEvents": true, "color": "#B4B2A9", "dashArray": "6 4", "dashOffset": null, "fill": false, "fillColor": "#B4B2A9", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.5, "smoothFactor": 1.0, "stroke": true, "weight": 2}
+            ).addTo(map_2bb00b5f880508036eef2bd506d78728);
+        
+    
+            poly_line_68d749d3c0ef451b0b66cd3a6d420b49.bindTooltip(
+                `<div>
+                     AI관 ↔ 공과대학2: 20분
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_edd7a70d017b1f993fcf86c81b86a3a9 = L.polyline(
+                [[37.455134, 127.133493], [37.45526, 127.134305], [37.4551, 127.135151]],
+                {"bubblingMouseEvents": true, "color": "#B4B2A9", "dashArray": "6 4", "dashOffset": null, "fill": false, "fillColor": "#B4B2A9", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.5, "smoothFactor": 1.0, "stroke": true, "weight": 2}
+            ).addTo(map_2bb00b5f880508036eef2bd506d78728);
+        
+    
+            poly_line_edd7a70d017b1f993fcf86c81b86a3a9.bindTooltip(
+                `<div>
+                     AI관 ↔ 종합운동장: 3분
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_afc604ece72af4330342dff6a9096c77 = L.polyline(
+                [[37.451583, 127.128075], [37.451404, 127.127519], [37.450461, 127.127533], [37.450362, 127.127897], [37.449414, 127.12791], [37.449445, 127.128455], [37.449308, 127.128314]],
+                {"bubblingMouseEvents": true, "color": "#B4B2A9", "dashArray": "6 4", "dashOffset": null, "fill": false, "fillColor": "#B4B2A9", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.5, "smoothFactor": 1.0, "stroke": true, "weight": 2}
+            ).addTo(map_2bb00b5f880508036eef2bd506d78728);
+        
+    
+            poly_line_afc604ece72af4330342dff6a9096c77.bindTooltip(
+                `<div>
+                     공과대학1 ↔ 공과대학2: 8분
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_188791ca3e735c3ed891452e9239d332 = L.polyline(
+                [[37.451583, 127.128075], [37.451404, 127.127519], [37.451009, 127.12751], [37.451021, 127.127093]],
+                {"bubblingMouseEvents": true, "color": "#B4B2A9", "dashArray": "6 4", "dashOffset": null, "fill": false, "fillColor": "#B4B2A9", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.5, "smoothFactor": 1.0, "stroke": true, "weight": 2}
+            ).addTo(map_2bb00b5f880508036eef2bd506d78728);
+        
+    
+            poly_line_188791ca3e735c3ed891452e9239d332.bindTooltip(
+                `<div>
+                     공과대학1 ↔ 반도체대학: 3분
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_733849e8dc8473a0caff3e2b82f25c95 = L.polyline(
+                [[37.451583, 127.128075], [37.451404, 127.127519], [37.451759, 127.127459], [37.451817, 127.127242]],
+                {"bubblingMouseEvents": true, "color": "#B4B2A9", "dashArray": "6 4", "dashOffset": null, "fill": false, "fillColor": "#B4B2A9", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.5, "smoothFactor": 1.0, "stroke": true, "weight": 2}
+            ).addTo(map_2bb00b5f880508036eef2bd506d78728);
+        
+    
+            poly_line_733849e8dc8473a0caff3e2b82f25c95.bindTooltip(
+                `<div>
+                     공과대학1 ↔ 글로벌센터: 2분
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_4221fefaf72b7d9649e8cc1ff72fd876 = L.polyline(
+                [[37.452245, 127.128764], [37.452151, 127.128566], [37.451888, 127.128677], [37.451951, 127.129082], [37.45163, 127.129749]],
+                {"bubblingMouseEvents": true, "color": "#B4B2A9", "dashArray": "6 4", "dashOffset": null, "fill": false, "fillColor": "#B4B2A9", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.5, "smoothFactor": 1.0, "stroke": true, "weight": 2}
+            ).addTo(map_2bb00b5f880508036eef2bd506d78728);
+        
+    
+            poly_line_4221fefaf72b7d9649e8cc1ff72fd876.bindTooltip(
+                `<div>
+                     예술체육대학1 ↔ 예술체육대학2: 3분
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_fca9844b8deacf1cc2fb6d61f78de886 = L.polyline(
+                [[37.452245, 127.128764], [37.452151, 127.128566], [37.451928, 127.128642], [37.451759, 127.127459], [37.451817, 127.127242]],
+                {"bubblingMouseEvents": true, "color": "#B4B2A9", "dashArray": "6 4", "dashOffset": null, "fill": false, "fillColor": "#B4B2A9", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.5, "smoothFactor": 1.0, "stroke": true, "weight": 2}
+            ).addTo(map_2bb00b5f880508036eef2bd506d78728);
+        
+    
+            poly_line_fca9844b8deacf1cc2fb6d61f78de886.bindTooltip(
+                `<div>
+                     예술체육대학1 ↔ 글로벌센터: 2분
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_67e8986fe5cf457dc1b70cf676fec89d = L.polyline(
+                [[37.451817, 127.127242], [37.451759, 127.127459], [37.452036, 127.129505], [37.452443, 127.129982], [37.452594, 127.130592], [37.451899, 127.131209], [37.452338, 127.131545], [37.452315, 127.131789], [37.451964, 127.131881]],
+                {"bubblingMouseEvents": true, "color": "#B4B2A9", "dashArray": "6 4", "dashOffset": null, "fill": false, "fillColor": "#B4B2A9", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.5, "smoothFactor": 1.0, "stroke": true, "weight": 2}
+            ).addTo(map_2bb00b5f880508036eef2bd506d78728);
+        
+    
+            poly_line_67e8986fe5cf457dc1b70cf676fec89d.bindTooltip(
+                `<div>
+                     글로벌센터 ↔ 교육대학원: 9분
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_02aa52c041b0dfa309484ac182aeb603 = L.polyline(
+                [[37.451964, 127.131881], [37.452335, 127.131744], [37.453067, 127.133603], [37.453409, 127.134027], [37.454035, 127.133767], [37.454416, 127.133394], [37.455426, 127.133167], [37.456051, 127.133975]],
+                {"bubblingMouseEvents": true, "color": "#B4B2A9", "dashArray": "6 4", "dashOffset": null, "fill": false, "fillColor": "#B4B2A9", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.5, "smoothFactor": 1.0, "stroke": true, "weight": 2}
+            ).addTo(map_2bb00b5f880508036eef2bd506d78728);
+        
+    
+            poly_line_02aa52c041b0dfa309484ac182aeb603.bindTooltip(
+                `<div>
+                     교육대학원 ↔ 제2기숙사: 11분
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_a8f206ef3f7d2d5ccee50fe4a699b3c8 = L.polyline(
+                [[37.451964, 127.131881], [37.452335, 127.131744], [37.453067, 127.133603], [37.453409, 127.134027], [37.454035, 127.133767], [37.454416, 127.133394], [37.455426, 127.133167], [37.455884, 127.133168]],
+                {"bubblingMouseEvents": true, "color": "#B4B2A9", "dashArray": "6 4", "dashOffset": null, "fill": false, "fillColor": "#B4B2A9", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.5, "smoothFactor": 1.0, "stroke": true, "weight": 2}
+            ).addTo(map_2bb00b5f880508036eef2bd506d78728);
+        
+    
+            poly_line_a8f206ef3f7d2d5ccee50fe4a699b3c8.bindTooltip(
+                `<div>
+                     교육대학원 ↔ 제3기숙사: 10분
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_5c739e31beb87d39bd2ddb11cd5a6aad = L.polyline(
+                [[37.456051, 127.133975], [37.455884, 127.133168]],
+                {"bubblingMouseEvents": true, "color": "#B4B2A9", "dashArray": "6 4", "dashOffset": null, "fill": false, "fillColor": "#B4B2A9", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.5, "smoothFactor": 1.0, "stroke": true, "weight": 2}
+            ).addTo(map_2bb00b5f880508036eef2bd506d78728);
+        
+    
+            poly_line_5c739e31beb87d39bd2ddb11cd5a6aad.bindTooltip(
+                `<div>
+                     제2기숙사 ↔ 제3기숙사: 1분
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_a7439c4280ac956c84db0f79ca74c6bb = L.polyline(
+                [[37.455884, 127.133168], [37.455426, 127.133167], [37.455079, 127.133263], [37.455134, 127.133493], [37.45526, 127.134305], [37.4551, 127.135151]],
+                {"bubblingMouseEvents": true, "color": "#B4B2A9", "dashArray": "6 4", "dashOffset": null, "fill": false, "fillColor": "#B4B2A9", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.5, "smoothFactor": 1.0, "stroke": true, "weight": 2}
+            ).addTo(map_2bb00b5f880508036eef2bd506d78728);
+        
+    
+            poly_line_a7439c4280ac956c84db0f79ca74c6bb.bindTooltip(
+                `<div>
+                     제3기숙사 ↔ 종합운동장: 5분
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_7e806d30f57ea4f5dc3c3f13ea7c0489 = L.polyline(
+                [[37.45047, 127.129785], [37.450485, 127.129586], [37.450834, 127.129716], [37.451398, 127.127517], [37.451743, 127.127431], [37.451817, 127.127242]],
+                {"bubblingMouseEvents": true, "color": "#1D9E75", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#1D9E75", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.85, "smoothFactor": 1.0, "stroke": true, "weight": 6}
+            ).addTo(map_2bb00b5f880508036eef2bd506d78728);
+        
+    
+            poly_line_7e806d30f57ea4f5dc3c3f13ea7c0489.bindTooltip(
+                `<div>
+                     돌아오는 길
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var marker_fca8edc5dd136898f4d8176516f8ed03 = L.marker(
+                [37.4497184, 127.1272083],
+                {
+}
+            ).addTo(map_2bb00b5f880508036eef2bd506d78728);
+        
+    
+            var div_icon_3dbe0e8c924a5127501b3d94fd8b928c = L.divIcon({
+  "html": "\n    \u003cdiv style=\"\n        background:#0F6E56;\n        border:2.5px solid white;\n        border-radius:18px;\n        width:68px;height:36px;\n        display:flex;align-items:center;justify-content:center;\n        font-size:11px;font-weight:700;color:white;\n        box-shadow:0 2px 8px rgba(0,0,0,0.3);\n        font-family:sans-serif;\n        white-space:nowrap;\n        padding:0 6px;\n    \"\u003e\ube44\uc804\ud0c0\uc6cc\u003c/div\u003e",
+  "iconSize": [68, 36],
+  "iconAnchor": [34, 18],
+  "className": "empty",
+});
+        
+    
+        var popup_96326573d36b248c32ea97c3161a07a4 = L.popup({
+  "maxWidth": 120,
+});
+
+        
+            
+                var html_56177a9118e9c9914f617850024c2ca3 = $(`<div id="html_56177a9118e9c9914f617850024c2ca3" style="width: 100.0%; height: 100.0%;">비전타워</div>`)[0];
+                popup_96326573d36b248c32ea97c3161a07a4.setContent(html_56177a9118e9c9914f617850024c2ca3);
+            
+        
+
+        marker_fca8edc5dd136898f4d8176516f8ed03.bindPopup(popup_96326573d36b248c32ea97c3161a07a4)
+        ;
+
+        
+    
+    
+            marker_fca8edc5dd136898f4d8176516f8ed03.bindTooltip(
+                `<div>
+                     비전타워
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_fca8edc5dd136898f4d8176516f8ed03.setIcon(div_icon_3dbe0e8c924a5127501b3d94fd8b928c);
+            
+    
+            var marker_7ed9a2f00037a1426998a9b1ed3f2550 = L.marker(
+                [37.45047, 127.129785],
+                {
+}
+            ).addTo(map_2bb00b5f880508036eef2bd506d78728);
+        
+    
+            var div_icon_54c952cbaffc0eb96a60401d7aa39f76 = L.divIcon({
+  "html": "\n    \u003cdiv style=\"\n        background:#534AB7;\n        border:2.5px solid white;\n        border-radius:18px;\n        width:55px;height:36px;\n        display:flex;align-items:center;justify-content:center;\n        font-size:11px;font-weight:700;color:white;\n        box-shadow:0 2px 8px rgba(0,0,0,0.3);\n        font-family:sans-serif;\n        white-space:nowrap;\n        padding:0 6px;\n    \"\u003e\uac00\ucc9c\uad00\u003c/div\u003e",
+  "iconSize": [55, 36],
+  "iconAnchor": [27, 18],
+  "className": "empty",
+});
+        
+    
+        var popup_b2b136702fab110fb8803bdf68e10e7d = L.popup({
+  "maxWidth": 120,
+});
+
+        
+            
+                var html_f67250cd52d95f69ce007bc09ec5d801 = $(`<div id="html_f67250cd52d95f69ce007bc09ec5d801" style="width: 100.0%; height: 100.0%;">가천관</div>`)[0];
+                popup_b2b136702fab110fb8803bdf68e10e7d.setContent(html_f67250cd52d95f69ce007bc09ec5d801);
+            
+        
+
+        marker_7ed9a2f00037a1426998a9b1ed3f2550.bindPopup(popup_b2b136702fab110fb8803bdf68e10e7d)
+        ;
+
+        
+    
+    
+            marker_7ed9a2f00037a1426998a9b1ed3f2550.bindTooltip(
+                `<div>
+                     가천관
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_7ed9a2f00037a1426998a9b1ed3f2550.setIcon(div_icon_54c952cbaffc0eb96a60401d7aa39f76);
+            
+    
+            var marker_8b35fb003513833dec89b0a6f5f4cd02 = L.marker(
+                [37.450829, 127.127895],
+                {
+}
+            ).addTo(map_2bb00b5f880508036eef2bd506d78728);
+        
+    
+            var div_icon_92ee6fea830f0ca3fc333f10204a0209 = L.divIcon({
+  "html": "\n    \u003cdiv style=\"\n        background:#0F6E56;\n        border:2.5px solid white;\n        border-radius:18px;\n        width:81px;height:36px;\n        display:flex;align-items:center;justify-content:center;\n        font-size:11px;font-weight:700;color:white;\n        box-shadow:0 2px 8px rgba(0,0,0,0.3);\n        font-family:sans-serif;\n        white-space:nowrap;\n        padding:0 6px;\n    \"\u003e\uc2a4\ud0c0\ub364\uad11\uc7a5\u003c/div\u003e",
+  "iconSize": [81, 36],
+  "iconAnchor": [40, 18],
+  "className": "empty",
+});
+        
+    
+        var popup_1477e2715588258bf2c62e37c0a8d3ac = L.popup({
+  "maxWidth": 120,
+});
+
+        
+            
+                var html_d831f3fad5de9abd8a66d6bf8748f52e = $(`<div id="html_d831f3fad5de9abd8a66d6bf8748f52e" style="width: 100.0%; height: 100.0%;">스타덤광장</div>`)[0];
+                popup_1477e2715588258bf2c62e37c0a8d3ac.setContent(html_d831f3fad5de9abd8a66d6bf8748f52e);
+            
+        
+
+        marker_8b35fb003513833dec89b0a6f5f4cd02.bindPopup(popup_1477e2715588258bf2c62e37c0a8d3ac)
+        ;
+
+        
+    
+    
+            marker_8b35fb003513833dec89b0a6f5f4cd02.bindTooltip(
+                `<div>
+                     스타덤광장
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_8b35fb003513833dec89b0a6f5f4cd02.setIcon(div_icon_92ee6fea830f0ca3fc333f10204a0209);
+            
+    
+            var marker_f74f113ed09f1a30451a2bdf453e4e84 = L.marker(
+                [37.455134, 127.133493],
+                {
+}
+            ).addTo(map_2bb00b5f880508036eef2bd506d78728);
+        
+    
+            var div_icon_6fed78b06cd98f0080054840c1b740f5 = L.divIcon({
+  "html": "\n    \u003cdiv style=\"\n        background:#0F6E56;\n        border:2.5px solid white;\n        border-radius:18px;\n        width:55px;height:36px;\n        display:flex;align-items:center;justify-content:center;\n        font-size:11px;font-weight:700;color:white;\n        box-shadow:0 2px 8px rgba(0,0,0,0.3);\n        font-family:sans-serif;\n        white-space:nowrap;\n        padding:0 6px;\n    \"\u003eAI\uad00\u003c/div\u003e",
+  "iconSize": [55, 36],
+  "iconAnchor": [27, 18],
+  "className": "empty",
+});
+        
+    
+        var popup_b17db9de0df0078bb3290680c9b28116 = L.popup({
+  "maxWidth": 120,
+});
+
+        
+            
+                var html_e324b8c3e0a37055cf1512ac83f7ac6a = $(`<div id="html_e324b8c3e0a37055cf1512ac83f7ac6a" style="width: 100.0%; height: 100.0%;">AI관</div>`)[0];
+                popup_b17db9de0df0078bb3290680c9b28116.setContent(html_e324b8c3e0a37055cf1512ac83f7ac6a);
+            
+        
+
+        marker_f74f113ed09f1a30451a2bdf453e4e84.bindPopup(popup_b17db9de0df0078bb3290680c9b28116)
+        ;
+
+        
+    
+    
+            marker_f74f113ed09f1a30451a2bdf453e4e84.bindTooltip(
+                `<div>
+                     AI관
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_f74f113ed09f1a30451a2bdf453e4e84.setIcon(div_icon_6fed78b06cd98f0080054840c1b740f5);
+            
+    
+            var marker_3931b455460d734ba362de4b7a972bfd = L.marker(
+                [37.455884, 127.133168],
+                {
+}
+            ).addTo(map_2bb00b5f880508036eef2bd506d78728);
+        
+    
+            var div_icon_75b03d0d99780d3536a5297184e086a7 = L.divIcon({
+  "html": "\n    \u003cdiv style=\"\n        background:#0F6E56;\n        border:2.5px solid white;\n        border-radius:18px;\n        width:81px;height:36px;\n        display:flex;align-items:center;justify-content:center;\n        font-size:11px;font-weight:700;color:white;\n        box-shadow:0 2px 8px rgba(0,0,0,0.3);\n        font-family:sans-serif;\n        white-space:nowrap;\n        padding:0 6px;\n    \"\u003e\uc81c3\uae30\uc219\uc0ac\u003c/div\u003e",
+  "iconSize": [81, 36],
+  "iconAnchor": [40, 18],
+  "className": "empty",
+});
+        
+    
+        var popup_d05cb08e0fc282a0a6e2e3133b4c0dee = L.popup({
+  "maxWidth": 120,
+});
+
+        
+            
+                var html_01503671c9d78bd92520581cfc662003 = $(`<div id="html_01503671c9d78bd92520581cfc662003" style="width: 100.0%; height: 100.0%;">제3기숙사</div>`)[0];
+                popup_d05cb08e0fc282a0a6e2e3133b4c0dee.setContent(html_01503671c9d78bd92520581cfc662003);
+            
+        
+
+        marker_3931b455460d734ba362de4b7a972bfd.bindPopup(popup_d05cb08e0fc282a0a6e2e3133b4c0dee)
+        ;
+
+        
+    
+    
+            marker_3931b455460d734ba362de4b7a972bfd.bindTooltip(
+                `<div>
+                     제3기숙사
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_3931b455460d734ba362de4b7a972bfd.setIcon(div_icon_75b03d0d99780d3536a5297184e086a7);
+            
+    
+            var marker_c5e04190324a7edef2c8dd16cecc090f = L.marker(
+                [37.456051, 127.133975],
+                {
+}
+            ).addTo(map_2bb00b5f880508036eef2bd506d78728);
+        
+    
+            var div_icon_77c0dc1acdb9de5b82ec19242962d14e = L.divIcon({
+  "html": "\n    \u003cdiv style=\"\n        background:#0F6E56;\n        border:2.5px solid white;\n        border-radius:18px;\n        width:81px;height:36px;\n        display:flex;align-items:center;justify-content:center;\n        font-size:11px;font-weight:700;color:white;\n        box-shadow:0 2px 8px rgba(0,0,0,0.3);\n        font-family:sans-serif;\n        white-space:nowrap;\n        padding:0 6px;\n    \"\u003e\uc81c2\uae30\uc219\uc0ac\u003c/div\u003e",
+  "iconSize": [81, 36],
+  "iconAnchor": [40, 18],
+  "className": "empty",
+});
+        
+    
+        var popup_e375fb964d8ac3dd80dcd0fc94575c30 = L.popup({
+  "maxWidth": 120,
+});
+
+        
+            
+                var html_3a1c2acb7c8daabf89e1c36b54c2e97a = $(`<div id="html_3a1c2acb7c8daabf89e1c36b54c2e97a" style="width: 100.0%; height: 100.0%;">제2기숙사</div>`)[0];
+                popup_e375fb964d8ac3dd80dcd0fc94575c30.setContent(html_3a1c2acb7c8daabf89e1c36b54c2e97a);
+            
+        
+
+        marker_c5e04190324a7edef2c8dd16cecc090f.bindPopup(popup_e375fb964d8ac3dd80dcd0fc94575c30)
+        ;
+
+        
+    
+    
+            marker_c5e04190324a7edef2c8dd16cecc090f.bindTooltip(
+                `<div>
+                     제2기숙사
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_c5e04190324a7edef2c8dd16cecc090f.setIcon(div_icon_77c0dc1acdb9de5b82ec19242962d14e);
+            
+    
+            var marker_a2aaa947d02d61173aeb50c908b8bca2 = L.marker(
+                [37.4551, 127.135151],
+                {
+}
+            ).addTo(map_2bb00b5f880508036eef2bd506d78728);
+        
+    
+            var div_icon_ac5becf4e424df285bbeceb1a8021562 = L.divIcon({
+  "html": "\n    \u003cdiv style=\"\n        background:#888780;\n        border:2.5px solid white;\n        border-radius:18px;\n        width:81px;height:36px;\n        display:flex;align-items:center;justify-content:center;\n        font-size:11px;font-weight:700;color:white;\n        box-shadow:0 2px 8px rgba(0,0,0,0.3);\n        font-family:sans-serif;\n        white-space:nowrap;\n        padding:0 6px;\n    \"\u003e\uc885\ud569\uc6b4\ub3d9\uc7a5\u003c/div\u003e",
+  "iconSize": [81, 36],
+  "iconAnchor": [40, 18],
+  "className": "empty",
+});
+        
+    
+        var popup_22f8d5dbdda0005a747d387ce939cd65 = L.popup({
+  "maxWidth": 120,
+});
+
+        
+            
+                var html_b96bda4dea8d80dbde51ab9eb5dd22ef = $(`<div id="html_b96bda4dea8d80dbde51ab9eb5dd22ef" style="width: 100.0%; height: 100.0%;">종합운동장</div>`)[0];
+                popup_22f8d5dbdda0005a747d387ce939cd65.setContent(html_b96bda4dea8d80dbde51ab9eb5dd22ef);
+            
+        
+
+        marker_a2aaa947d02d61173aeb50c908b8bca2.bindPopup(popup_22f8d5dbdda0005a747d387ce939cd65)
+        ;
+
+        
+    
+    
+            marker_a2aaa947d02d61173aeb50c908b8bca2.bindTooltip(
+                `<div>
+                     종합운동장
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_a2aaa947d02d61173aeb50c908b8bca2.setIcon(div_icon_ac5becf4e424df285bbeceb1a8021562);
+            
+    
+            var marker_e6416f3358526400d903aee179f90eb0 = L.marker(
+                [37.452401, 127.132947],
+                {
+}
+            ).addTo(map_2bb00b5f880508036eef2bd506d78728);
+        
+    
+            var div_icon_92b1e4f326ad2e8ac30cfd8b41ef1601 = L.divIcon({
+  "html": "\n    \u003cdiv style=\"\n        background:#0F6E56;\n        border:2.5px solid white;\n        border-radius:18px;\n        width:81px;height:36px;\n        display:flex;align-items:center;justify-content:center;\n        font-size:11px;font-weight:700;color:white;\n        box-shadow:0 2px 8px rgba(0,0,0,0.3);\n        font-family:sans-serif;\n        white-space:nowrap;\n        padding:0 6px;\n    \"\u003e\uc911\uc559\ub3c4\uc11c\uad00\u003c/div\u003e",
+  "iconSize": [81, 36],
+  "iconAnchor": [40, 18],
+  "className": "empty",
+});
+        
+    
+        var popup_783032aa5847c59609cf80c877ef6060 = L.popup({
+  "maxWidth": 120,
+});
+
+        
+            
+                var html_11312c14011ab67e2909f3f43edc8233 = $(`<div id="html_11312c14011ab67e2909f3f43edc8233" style="width: 100.0%; height: 100.0%;">중앙도서관</div>`)[0];
+                popup_783032aa5847c59609cf80c877ef6060.setContent(html_11312c14011ab67e2909f3f43edc8233);
+            
+        
+
+        marker_e6416f3358526400d903aee179f90eb0.bindPopup(popup_783032aa5847c59609cf80c877ef6060)
+        ;
+
+        
+    
+    
+            marker_e6416f3358526400d903aee179f90eb0.bindTooltip(
+                `<div>
+                     중앙도서관
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_e6416f3358526400d903aee179f90eb0.setIcon(div_icon_92b1e4f326ad2e8ac30cfd8b41ef1601);
+            
+    
+            var marker_a150e4010568eb803c3502174cc349cf = L.marker(
+                [37.451964, 127.131881],
+                {
+}
+            ).addTo(map_2bb00b5f880508036eef2bd506d78728);
+        
+    
+            var div_icon_d5d39e59e1ccdf1b34c8070f8226227e = L.divIcon({
+  "html": "\n    \u003cdiv style=\"\n        background:#0F6E56;\n        border:2.5px solid white;\n        border-radius:18px;\n        width:81px;height:36px;\n        display:flex;align-items:center;justify-content:center;\n        font-size:11px;font-weight:700;color:white;\n        box-shadow:0 2px 8px rgba(0,0,0,0.3);\n        font-family:sans-serif;\n        white-space:nowrap;\n        padding:0 6px;\n    \"\u003e\uad50\uc721\ub300\ud559\uc6d0\u003c/div\u003e",
+  "iconSize": [81, 36],
+  "iconAnchor": [40, 18],
+  "className": "empty",
+});
+        
+    
+        var popup_9e0e33581d4cf310a5a84a25b4adbbe6 = L.popup({
+  "maxWidth": 120,
+});
+
+        
+            
+                var html_39905439e84aef251ce6229696917792 = $(`<div id="html_39905439e84aef251ce6229696917792" style="width: 100.0%; height: 100.0%;">교육대학원</div>`)[0];
+                popup_9e0e33581d4cf310a5a84a25b4adbbe6.setContent(html_39905439e84aef251ce6229696917792);
+            
+        
+
+        marker_a150e4010568eb803c3502174cc349cf.bindPopup(popup_9e0e33581d4cf310a5a84a25b4adbbe6)
+        ;
+
+        
+    
+    
+            marker_a150e4010568eb803c3502174cc349cf.bindTooltip(
+                `<div>
+                     교육대학원
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_a150e4010568eb803c3502174cc349cf.setIcon(div_icon_d5d39e59e1ccdf1b34c8070f8226227e);
+            
+    
+            var marker_17e5b0107ebf396637d1f2b360dec586 = L.marker(
+                [37.451583, 127.128075],
+                {
+}
+            ).addTo(map_2bb00b5f880508036eef2bd506d78728);
+        
+    
+            var div_icon_d1bef4f3f9531eb88d74964ff9ec39ae = L.divIcon({
+  "html": "\n    \u003cdiv style=\"\n        background:#0F6E56;\n        border:2.5px solid white;\n        border-radius:18px;\n        width:81px;height:36px;\n        display:flex;align-items:center;justify-content:center;\n        font-size:11px;font-weight:700;color:white;\n        box-shadow:0 2px 8px rgba(0,0,0,0.3);\n        font-family:sans-serif;\n        white-space:nowrap;\n        padding:0 6px;\n    \"\u003e\uacf5\uacfc\ub300\ud5591\u003c/div\u003e",
+  "iconSize": [81, 36],
+  "iconAnchor": [40, 18],
+  "className": "empty",
+});
+        
+    
+        var popup_b905eab4a4d4a4a5f80758a174859a7d = L.popup({
+  "maxWidth": 120,
+});
+
+        
+            
+                var html_4bad2c6ec65705e70759ac72a84b0084 = $(`<div id="html_4bad2c6ec65705e70759ac72a84b0084" style="width: 100.0%; height: 100.0%;">공과대학1</div>`)[0];
+                popup_b905eab4a4d4a4a5f80758a174859a7d.setContent(html_4bad2c6ec65705e70759ac72a84b0084);
+            
+        
+
+        marker_17e5b0107ebf396637d1f2b360dec586.bindPopup(popup_b905eab4a4d4a4a5f80758a174859a7d)
+        ;
+
+        
+    
+    
+            marker_17e5b0107ebf396637d1f2b360dec586.bindTooltip(
+                `<div>
+                     공과대학1
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_17e5b0107ebf396637d1f2b360dec586.setIcon(div_icon_d1bef4f3f9531eb88d74964ff9ec39ae);
+            
+    
+            var marker_aaf548423be74f30917460b880b7fb88 = L.marker(
+                [37.449308, 127.128314],
+                {
+}
+            ).addTo(map_2bb00b5f880508036eef2bd506d78728);
+        
+    
+            var div_icon_447506605aba0379b07fd61174108c78 = L.divIcon({
+  "html": "\n    \u003cdiv style=\"\n        background:#0F6E56;\n        border:2.5px solid white;\n        border-radius:18px;\n        width:81px;height:36px;\n        display:flex;align-items:center;justify-content:center;\n        font-size:11px;font-weight:700;color:white;\n        box-shadow:0 2px 8px rgba(0,0,0,0.3);\n        font-family:sans-serif;\n        white-space:nowrap;\n        padding:0 6px;\n    \"\u003e\uacf5\uacfc\ub300\ud5592\u003c/div\u003e",
+  "iconSize": [81, 36],
+  "iconAnchor": [40, 18],
+  "className": "empty",
+});
+        
+    
+        var popup_983ff99a2e93bc331c6c96c390c279a7 = L.popup({
+  "maxWidth": 120,
+});
+
+        
+            
+                var html_ebc6ca05aa6b3b2ffc2f1968d0be12fa = $(`<div id="html_ebc6ca05aa6b3b2ffc2f1968d0be12fa" style="width: 100.0%; height: 100.0%;">공과대학2</div>`)[0];
+                popup_983ff99a2e93bc331c6c96c390c279a7.setContent(html_ebc6ca05aa6b3b2ffc2f1968d0be12fa);
+            
+        
+
+        marker_aaf548423be74f30917460b880b7fb88.bindPopup(popup_983ff99a2e93bc331c6c96c390c279a7)
+        ;
+
+        
+    
+    
+            marker_aaf548423be74f30917460b880b7fb88.bindTooltip(
+                `<div>
+                     공과대학2
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_aaf548423be74f30917460b880b7fb88.setIcon(div_icon_447506605aba0379b07fd61174108c78);
+            
+    
+            var marker_1cc00f255c97e988a0179244833abc17 = L.marker(
+                [37.451817, 127.127242],
+                {
+}
+            ).addTo(map_2bb00b5f880508036eef2bd506d78728);
+        
+    
+            var div_icon_2a9c91da5c658e53b2664a809a511d76 = L.divIcon({
+  "html": "\n    \u003cdiv style=\"\n        background:#993C1D;\n        border:2.5px solid white;\n        border-radius:18px;\n        width:81px;height:36px;\n        display:flex;align-items:center;justify-content:center;\n        font-size:11px;font-weight:700;color:white;\n        box-shadow:0 2px 8px rgba(0,0,0,0.3);\n        font-family:sans-serif;\n        white-space:nowrap;\n        padding:0 6px;\n    \"\u003e\uae00\ub85c\ubc8c\uc13c\ud130\u003c/div\u003e",
+  "iconSize": [81, 36],
+  "iconAnchor": [40, 18],
+  "className": "empty",
+});
+        
+    
+        var popup_ced122eb2e9adbcdff43f3510820d27f = L.popup({
+  "maxWidth": 120,
+});
+
+        
+            
+                var html_8b7f9514652c670376985a4fc55a411a = $(`<div id="html_8b7f9514652c670376985a4fc55a411a" style="width: 100.0%; height: 100.0%;">글로벌센터</div>`)[0];
+                popup_ced122eb2e9adbcdff43f3510820d27f.setContent(html_8b7f9514652c670376985a4fc55a411a);
+            
+        
+
+        marker_1cc00f255c97e988a0179244833abc17.bindPopup(popup_ced122eb2e9adbcdff43f3510820d27f)
+        ;
+
+        
+    
+    
+            marker_1cc00f255c97e988a0179244833abc17.bindTooltip(
+                `<div>
+                     글로벌센터
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_1cc00f255c97e988a0179244833abc17.setIcon(div_icon_2a9c91da5c658e53b2664a809a511d76);
+            
+    
+            var marker_0e8d413232cba74a14898564bf816f0c = L.marker(
+                [37.452245, 127.128764],
+                {
+}
+            ).addTo(map_2bb00b5f880508036eef2bd506d78728);
+        
+    
+            var div_icon_1e9757a6db254acfd3b81c89dcb033c4 = L.divIcon({
+  "html": "\n    \u003cdiv style=\"\n        background:#0F6E56;\n        border:2.5px solid white;\n        border-radius:18px;\n        width:107px;height:36px;\n        display:flex;align-items:center;justify-content:center;\n        font-size:11px;font-weight:700;color:white;\n        box-shadow:0 2px 8px rgba(0,0,0,0.3);\n        font-family:sans-serif;\n        white-space:nowrap;\n        padding:0 6px;\n    \"\u003e\uc608\uc220\uccb4\uc721\ub300\ud5591\u003c/div\u003e",
+  "iconSize": [107, 36],
+  "iconAnchor": [53, 18],
+  "className": "empty",
+});
+        
+    
+        var popup_6d4d9467904d7a90e0d4574f89d2d062 = L.popup({
+  "maxWidth": 120,
+});
+
+        
+            
+                var html_b00fb9c4c7feb6a8d7aa28f609506805 = $(`<div id="html_b00fb9c4c7feb6a8d7aa28f609506805" style="width: 100.0%; height: 100.0%;">예술체육대학1</div>`)[0];
+                popup_6d4d9467904d7a90e0d4574f89d2d062.setContent(html_b00fb9c4c7feb6a8d7aa28f609506805);
+            
+        
+
+        marker_0e8d413232cba74a14898564bf816f0c.bindPopup(popup_6d4d9467904d7a90e0d4574f89d2d062)
+        ;
+
+        
+    
+    
+            marker_0e8d413232cba74a14898564bf816f0c.bindTooltip(
+                `<div>
+                     예술체육대학1
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_0e8d413232cba74a14898564bf816f0c.setIcon(div_icon_1e9757a6db254acfd3b81c89dcb033c4);
+            
+    
+            var marker_661c05cb09637eee7a178e48c46018cf = L.marker(
+                [37.45163, 127.129749],
+                {
+}
+            ).addTo(map_2bb00b5f880508036eef2bd506d78728);
+        
+    
+            var div_icon_bac02decf41745d060615c9f9ee6f2c1 = L.divIcon({
+  "html": "\n    \u003cdiv style=\"\n        background:#0F6E56;\n        border:2.5px solid white;\n        border-radius:18px;\n        width:107px;height:36px;\n        display:flex;align-items:center;justify-content:center;\n        font-size:11px;font-weight:700;color:white;\n        box-shadow:0 2px 8px rgba(0,0,0,0.3);\n        font-family:sans-serif;\n        white-space:nowrap;\n        padding:0 6px;\n    \"\u003e\uc608\uc220\uccb4\uc721\ub300\ud5592\u003c/div\u003e",
+  "iconSize": [107, 36],
+  "iconAnchor": [53, 18],
+  "className": "empty",
+});
+        
+    
+        var popup_ddab417d8f0bef3cd91e7b9219185a77 = L.popup({
+  "maxWidth": 120,
+});
+
+        
+            
+                var html_18cce91133e12ad9bd6f5760e0489d4f = $(`<div id="html_18cce91133e12ad9bd6f5760e0489d4f" style="width: 100.0%; height: 100.0%;">예술체육대학2</div>`)[0];
+                popup_ddab417d8f0bef3cd91e7b9219185a77.setContent(html_18cce91133e12ad9bd6f5760e0489d4f);
+            
+        
+
+        marker_661c05cb09637eee7a178e48c46018cf.bindPopup(popup_ddab417d8f0bef3cd91e7b9219185a77)
+        ;
+
+        
+    
+    
+            marker_661c05cb09637eee7a178e48c46018cf.bindTooltip(
+                `<div>
+                     예술체육대학2
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_661c05cb09637eee7a178e48c46018cf.setIcon(div_icon_bac02decf41745d060615c9f9ee6f2c1);
+            
+    
+            var marker_a68a483a74c4d296e67ccd144ff6de36 = L.marker(
+                [37.451021, 127.127093],
+                {
+}
+            ).addTo(map_2bb00b5f880508036eef2bd506d78728);
+        
+    
+            var div_icon_3d4daf3898b352586efd274cf9262fde = L.divIcon({
+  "html": "\n    \u003cdiv style=\"\n        background:#0F6E56;\n        border:2.5px solid white;\n        border-radius:18px;\n        width:81px;height:36px;\n        display:flex;align-items:center;justify-content:center;\n        font-size:11px;font-weight:700;color:white;\n        box-shadow:0 2px 8px rgba(0,0,0,0.3);\n        font-family:sans-serif;\n        white-space:nowrap;\n        padding:0 6px;\n    \"\u003e\ubc18\ub3c4\uccb4\ub300\ud559\u003c/div\u003e",
+  "iconSize": [81, 36],
+  "iconAnchor": [40, 18],
+  "className": "empty",
+});
+        
+    
+        var popup_7a1853f2d580c20c93438ea4cb819afb = L.popup({
+  "maxWidth": 120,
+});
+
+        
+            
+                var html_4d0ac2704d34348f8649badabad979da = $(`<div id="html_4d0ac2704d34348f8649badabad979da" style="width: 100.0%; height: 100.0%;">반도체대학</div>`)[0];
+                popup_7a1853f2d580c20c93438ea4cb819afb.setContent(html_4d0ac2704d34348f8649badabad979da);
+            
+        
+
+        marker_a68a483a74c4d296e67ccd144ff6de36.bindPopup(popup_7a1853f2d580c20c93438ea4cb819afb)
+        ;
+
+        
+    
+    
+            marker_a68a483a74c4d296e67ccd144ff6de36.bindTooltip(
+                `<div>
+                     반도체대학
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_a68a483a74c4d296e67ccd144ff6de36.setIcon(div_icon_3d4daf3898b352586efd274cf9262fde);
+            
+</script>
+</html>

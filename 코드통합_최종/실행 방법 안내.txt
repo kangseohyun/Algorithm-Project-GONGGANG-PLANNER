@@ -1,0 +1,37 @@
+공강 플래너 실행 방법 (최종 검증: 2026-06-18)
+
+1. 필수 환경
+- Python 3.12.x 필수 (검증 환경: Python 3.12.4)
+- 터미널에서 이 프로젝트 폴더로 이동
+
+2. 가상환경 생성 및 활성화 (권장)
+macOS/Linux:
+  python3.12 -m venv .venv
+  source .venv/bin/activate
+
+Windows PowerShell:
+  py -3.12 -m venv .venv
+  .\.venv\Scripts\Activate.ps1
+
+3. 의존성 설치
+  python -m pip install --upgrade pip
+  python -m pip install -r requirements.txt
+
+4. CLI 통합 실행
+  python main.py
+
+실행 후 터미널에 시간표, 최단경로, 혼잡도, 장소 추천 결과가 순서대로 출력되고,
+프로젝트 루트에 campus_path.html이 생성됩니다.
+
+5. Streamlit 통합 UI 실행
+  python -m streamlit run streamlit_app.py --server.port 8501
+
+브라우저가 자동으로 열리지 않으면 http://localhost:8501 접속
+8501 포트가 사용 중이면 --server.port 8502로 변경
+
+6. 빠른 문법 검사
+  python -m compileall -q .
+
+주의:
+- 압축 파일 안에서 바로 실행하지 말고 먼저 압축을 풀어주세요.
+- 가상환경 활성화 후 python --version이 3.12.x인지 확인해주세요.
